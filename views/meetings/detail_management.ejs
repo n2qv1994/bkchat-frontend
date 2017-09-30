@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../partials/head %>
+    <link rel="stylesheet" href="<%= data.host %>plugins/datatables/dataTables.bootstrap.css">
+  </head>
+  <body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+      <header class="main-header">
+        <% include ../partials/header %>
+      </header>
+      <aside class="main-sidebar">
+        <% include ../partials/side_menu_management %>
+      </aside>
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Meeting Management
+            <small><%= data.item.room_code %></small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/management/meeting_managemant">Meeting Management</a></li>
+            <li><a href="/management/meeting_managemant/<%= data.item.room_code %>"></a><%= data.item.room_code %></li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-md-12">
+              <!-- Horizontal Form -->
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Meeting Setting</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal">
+                  <div class="box-body">
+                    <div class="form-group" style="border-bottom:1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="topic" class="col-sm-2 control-label">Topic</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div style="margin-left:100px"><%= data.item.room_name %></div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom:1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="description" class="col-sm-2 control-label">Description</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div style="margin-left:100px"><%= data.item.description %></div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="start_time" class="col-sm-2 control-label">Start Time</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div style="margin-left:100px"><%= data.item.started_at %></div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="create_time" class="col-sm-2 control-label">Created Time</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div style="margin-left:100px"><%= data.item.created_at %></div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="meeting_id" class="col-sm-2 control-label">Meeting ID</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div style="margin-left:100px"><%= data.item.room_code %></div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="url" class="col-sm-2 control-label">Join URL</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div style="margin-left:100px"><%= data.item.link %></div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="member" class="col-sm-2 control-label">Members</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <table class="table table-condensed" style="margin-left:100px">
+                          <tr>
+                            <th>Image</th>
+                            <th>User Name</th>
+                            <th>Full Name</th>
+                          </tr>
+                          <% for(var i = 0; i < data.item.users.length; i++) { %>
+                            <tr>
+                              <td>
+                                <div class="user-panel">
+                                  <div class="image">
+                                    <img src="<%= data.item.users[i].image %>" class="img-circle" alt="User Image">
+                                  </div>
+                                </div>
+                              </td>
+                              <td><%= data.item.users[i].user_name %></td>
+                              <td><%= data.item.users[i].first_name + ' ' + data.item.users[i].last_name %></td>
+                            </tr>
+                          <% } %>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.box-body -->
+               <!--    <div class="box-footer">
+                    <a href="" class="btn btn-default">Delete this Meeting</a>
+                    <a href="<%= data.item.link %>" class="btn btn-info pull-right">Start this Meeting</a>
+                    <a href="/meetings/<%= data.item.room_code %>/edit" class="btn btn-default pull-right" style="margin-right:5px">Edit this Meeting</a>
+                  </div> -->
+                  <!-- /.box-footer -->
+                </form>
+              </div>
+              <!-- /.box -->
+            </div>
+          <!-- /.col -->
+          </>
+        </section>
+      </div>
+      <footer class="main-footer">
+      </footer>
+    </div>
+    <!-- jQuery 2.2.3 -->
+    <script src="<%= data.host %>plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="<%= data.host %>bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <script src="<%= data.host %>plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="<%= data.host %>plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="<%= data.host %>plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="<%= data.host %>plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="<%= data.host %>libs/dist/js/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="<%= data.host %>libs/dist/js/demo.js"></script>
+    <!-- page script -->
+    <script>
+      console.log(<%- data.item.users.length %>);
+    </script>
+  </body>
+</html>

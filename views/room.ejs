@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ./partials/head %>
+    <link rel="stylesheet" href="<%= data.host %>/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/annotation.opentok.css">
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/endMeeting.opentok.css">
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/room.opentok.css">
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/style.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+      html,body{
+        height:100%!important;
+      }
+
+      body{
+        margin:0;
+        padding:0;
+        background-color:#000;
+      }
+      /* custom inclusion of right, left and below tabs */
+
+      .tabs-below > .nav-tabs,
+      .tabs-right > .nav-tabs,
+      .tabs-left > .nav-tabs {
+        border-bottom: 0;
+      }
+
+      .tab-content > .tab-pane,
+      .pill-content > .pill-pane {
+        display: none;
+      }
+
+      .tab-content > .active,
+      .pill-content > .active {
+        display: block;
+      }
+
+      .tabs-below > .nav-tabs {
+        border-top: 1px solid #ddd;
+      }
+
+      .tabs-below > .nav-tabs > li {
+        margin-top: -1px;
+        margin-bottom: 0;
+      }
+
+      .tabs-below > .nav-tabs > li > a {
+        -webkit-border-radius: 0 0 4px 4px;
+           -moz-border-radius: 0 0 4px 4px;
+                border-radius: 0 0 4px 4px;
+      }
+
+      .tabs-below > .nav-tabs > li > a:hover,
+      .tabs-below > .nav-tabs > li > a:focus {
+        border-top-color: #ddd;
+        border-bottom-color: transparent;
+      }
+
+      .tabs-below > .nav-tabs > .active > a,
+      .tabs-below > .nav-tabs > .active > a:hover,
+      .tabs-below > .nav-tabs > .active > a:focus {
+        border-color: transparent #ddd #ddd #ddd;
+      }
+
+      .tabs-left > .nav-tabs > li,
+      .tabs-right > .nav-tabs > li {
+        float: none;
+      }
+
+      .tabs-left > .nav-tabs > li > a,
+      .tabs-right > .nav-tabs > li > a {
+        margin-right: 0;
+        margin-bottom: 3px;
+      }
+
+      .tabs-right > .nav-tabs {
+        float: right;
+        margin-left: 0px;
+        border-left: 1px solid #ddd;
+      }
+
+      .tabs-right > .nav-tabs > li > a {
+        margin-left: -1px;
+        -webkit-border-radius: 0 4px 4px 0;
+           -moz-border-radius: 0 4px 4px 0;
+                border-radius: 0 4px 4px 0;
+      }
+
+      .tabs-right > .nav-tabs > li > a:hover,
+      .tabs-right > .nav-tabs > li > a:focus {
+        border-color: #eeeeee #eeeeee #eeeeee #dddddd;
+      }
+
+      .tabs-right > .nav-tabs .active > a,
+      .tabs-right > .nav-tabs .active > a:hover,
+      .tabs-right > .nav-tabs .active > a:focus {
+        border-color: #ddd #ddd #ddd transparent;
+        *border-left-color: #ffffff;
+      }
+      .icon-box-item {
+      }
+      #nav-tabs-right {
+        background-color: #ddd
+      }
+      .remote-video {
+        box-shadow: 0px 5px 0px #4e044c;
+        border-radius: 2%;
+        width: 180px;
+        height: 140px;
+        border: solid;
+        border-color: #3b373c;
+      }
+     .icon-buttons-1 {
+        left: 38%;
+        position: absolute;
+        top: 80%;
+        z-index: 1; 
+      }
+      .icon-buttons-2 {
+        left: 50%;
+        position: absolute;
+        top: 80%;
+        z-index: 1; 
+      }
+    </style>
+  </head>
+  <body>
+
+    <section id="dock" class="col-md-4">
+      <header class="info">
+        <div id="handler" onclick="toggleNav()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <h1>
+          <span id="roomName"><%= data.room_name %></span>
+        </h1>
+        <hr>
+        <h2><span class="participants"></span></h2>
+        <h3>
+          <i data-icon="participants"></i><span class="participants"></span><span class="participantsStr"></span>
+        </h3>
+      </header>
+      <nav class="menu tc-sidebar">
+        <div class="tc-list">
+          <ul>
+            <li>
+              <a href="#" data-toggle="collapse" data-target="#demo" id="participants" style="color:#0099cc"><i class="fa fa-users" aria-hidden="true"></i><span> Participants</span></a>
+            </li>
+           <!--  <li>
+              <a href="#" style="color:#0099cc"><i class="fa fa-files-o"></i> Share file</a>
+            </li> -->
+            <li>
+              <a href="#" id="button_record" style="color:#0099cc"><i class="fa fa-bullseye" aria-hidden="true"></i><span> Start Recording</span></a>
+            </li>
+            <li>
+              <a href="#" id="download" disabled style="color:#0099cc"><i class="fa fa-download" aria-hidden="true" ></i><span> Save</span></a>
+            </li>
+             <li>
+              <a href="#" id="upload" style="color:#0099cc"><i class="fa fa-upload" aria-hidden="true"></i><span> Upload</span></a>
+            </li>
+            <!-- <li>
+              <a href="#" id="viewRecordings" style="color:#0099cc"><i class="fa fa-th"></i><span> Manage recordings</span></a>
+            </li>
+            <li id="toggleSharing" disabled>
+              <a href="#" id="startSharingDesktop" style="color:#0099cc"><i class="fa fa-laptop"></i></i><span> Share your screen</span></a>
+            </li> -->
+            
+            <li id="toggleChat">
+              <a href="#" id="startChat"><i class="fa fa-external-link" aria-hidden="true"></i><span> Open text chat</span></a>
+              <a href="#" id="stopChat" style="color:#0099cc"><i class="fa fa-external-link" data-icon="chat"></i><span>Close text chat</span></a>
+            </li>
+
+            <li id="config_icon">
+              <a href="#" style="color:#0099cc"><i class="fa fa-cog" aria-hidden="true"></i><span> Config</span></a>
+            </li>
+            
+            <li>
+              <a href="#" id="endCall" class="danger" onclick="out_room()"><i class="fa fa-sign-out" aria-hidden="true"></i></i><span>End meeting</span></a>
+            </li>
+            <li class="surrounded bottom tight tooltip" tooltip="Stop receiving video">
+              <a href="#" id="videoSwitch"><span>Stop receiving video</span></a>
+            </li>
+            <li class="tight tooltip" tooltip="Mute all participants">
+              <a href="#" id="audioSwitch"><span>Mute all participants</span></a>
+            </li>
+            
+          </ul>
+        </div>
+      </nav>
+      <footer class="feedback">
+        <a href="#" id="showFeedback"><span><span class="plus-icon">[+]</span> Give Demo Feedback</span></a>
+      </footer>
+    </section>
+
+    <div id="remote-video" class="col-md-2" style="overflow-y: scroll;">
+      <div style="margin-top: 10%; position: relative; width: 180px">
+        <video class="remote-video" id="local_stream" style="width: 180px; top: 2%; margin-left: -8px" muted autoplay poster="">
+        </video>
+          <div class="fa fa-microphone icon-buttons-1" id="local_muted"></div>
+          <div class="fa fa-microphone-slash icon-buttons-1" id="local_unmuted" style="display: none;"></div>
+          <div class="fa fa-video-camera icon-buttons-2" id="local_pause"></div>
+          <img src="<%- data.host %>/images/camera-off.png" class="icon-buttons-2" id="local_resume" style="display: none; width: 20px; height: 20px">
+      </div>
+    </div>
+
+
+    <section class="col-md-8" style="height:100%;padding:0">
+      <div class="col-md-12" style="padding:0;" id="remote-video">
+      </div>
+      <div id="main-stream" style="text-align: center;padding-top: 5vh;">
+        <canvas id="canvas" style="width:90%;background:#ddd; border-radius: 2%"></canvas>
+        <span id ="remove_icon" onclick="remove_main()" style="margin-left:-15px; margin-top: 10px; position:absolute">
+          <a href="#">
+            <i class="fa fa-times" style="font-size: 20px"></i>
+          </a>
+        </span>
+      </div>
+    </section>
+
+      <div class="col-md-12 content-room" style="float:left; position:absolute; bottom:0; width:100%;padding:0">
+        <section class="col-md-3 room-right" style="height:100%; float:right; padding:0">
+          <div class="box" id="box" style="margin-bottom:0; border-radius:2%; display: none;">
+          <div class="tab-pane" id="chat_text">
+            <div class="alert alert-info" id="chat_text_header" style="margin-top: -5px">
+                <strong>Chat</strong>
+            </div>
+           <div id="chat_text_body" style="overflow-y:scroll; padding:0 8px 0 8px; margin-top: -20px">
+           </div>
+            <div class="input-group" id="chat_text_input" style="margin-bottom: 0px">
+              <input id="text_message" type="text" name="message" placeholder="Type Message ..." class="form-control">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-info btn-flat" onclick="send_message()">Send</button>
+                  </span>
+            </div>
+           </div>
+          </div>
+        </section>
+      </div>
+
+      <div id='chat-box-bottom' style="position: fixed;bottom: 0px; right: 0px; width: 250px; display: none;">
+        <!-- DIRECT CHAT PRIMARY -->
+        <div class="box box-primary direct-chat direct-chat-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title" id="direct_name"> Direct Chat</h3>
+
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
+              <button  id="close" type="button" class="btn btn-box-tool"><i class="fa fa-times"></i></button>
+            </div>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <!-- Conversations are loaded here -->
+            <div class="direct-chat-messages" id="direct-chat-messages">
+            </div>
+            <!--/.direct-chat-messages-->
+          </div>
+          <!-- /.box-body -->
+          <div class="box-footer">
+              <div class="input-group">
+                <input id ="text-message" type="text" name="message" placeholder="Type Message ..." class="form-control">
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary btn-flat" onclick="send()">Send</button>
+                    </span>
+              </div>
+          </div>
+          <!-- /.box-footer-->
+        </div>
+        <!--/.direct-chat -->
+      </div>
+
+      <div id="config_modal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header" style="text-align:center">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Switch preferred camera and microphone</h4>
+            </div>
+            <div class="modal-body" style="height:600px">
+              <div class="col-md-12" style="text-align:center; margin-bottom: 25px">
+                <video id="config_stream" muted autoplay poster="images/webrtc.png" style="width: 250px; height: 200px; border: 1px solid #e7e7e7"></video>
+                <div style="color: rgba(0,0,0,.54);">If you are having problems, try restarting your browser.</div>
+              </div>
+              <div>
+                <div class="col-md-6">
+                  <div class="title-config" style="font-size: 20px; margin-bottom: 3px">
+                    Camera
+                  </div>
+                  <div class="option-config">
+                    <div class="form-group">
+                      <select class="form-control" id="camera-option">
+                      </select>
+                    </div>
+                  </div>
+                  <div class="title-config" style="font-size: 20px; margin-bottom: 3px">
+                    Video Quality
+                  </div>
+                  <div class="option-config">
+                    <div class="radio radio-danger">
+                      <label><input id="opt_low" type="radio" name="optradio" value="10" checked>Low</label>
+                    </div>
+                    <div class="radio radio-danger">
+                      <label><input id="opt_medium" type="radio" name="optradio" value="30">Medium</label>
+                    </div>
+                    <div class="radio radio-danger">
+                      <label><input id="opt_good" type="radio" name="optradio" value="60">Good</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="title-config" style="font-size: 20px; margin-bottom: 3px">
+                    Microphone
+                  </div>
+                  <div class="option-config">
+                    <div class="form-group">
+                      <select class="form-control" id="microphone-option">
+                      </select>
+                    </div>
+
+                    <div class="title-config" style="font-size: 20px; margin-bottom: 3px">
+                      Sound Output
+                    </div>
+                    <div class="option-config" style="margin-bottom: 48px">
+                      <div class="form-group">
+                        <select class="form-control" id="sound-option">
+                        </select>
+                      </div>
+                    </div>
+                    <div class="option-config">
+                      <button class="btn btn-primary" style="width:100%" data-dismiss="modal" onclick="save_setting()">Save</button>
+                      <!-- <button class="btn btn-primary" style="width:100%" onclick="save_done()">Ok</button> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="participant_modal" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">List Participant</h4>
+            </div>
+              <ul class="list-group" id="list_participant" style="height: 150px; overflow-y: scroll;">
+              </ul>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal fade" id="upload_modal" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Upload Video</h4>
+            </div>
+            <div class="modal-body">
+              <form action="<%= data.host %>rooms/upload" method="post">
+                <div class="form-group">
+                  <label for="text">Video name:</label>
+                  <input type="text" class="form-control" name="file_name">
+                </div>
+                <div class="form-group">
+                  <label for="pwd">Choose video:</label>
+                  <input type="file" class="form-control" name="file">
+                </div>
+                <button type="submit" class="btn btn-default">Upload</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </form>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+      </footer>
+    </div>
+    <script src="<%= data.host %>javascripts/config.js"></script>
+    <script src="<%= data.host %>jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="<%= data.host %>bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="<%= data.host %>plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="<%= data.host %>libs/dist/js/app.min.js"></script>
+    <script src="<%= data.host %>eventemitter2/lib/eventemitter2.js"></script>
+    <!-- Sparkline -->
+    <script src="<%= data.host %>plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!-- jvectormap -->
+    <script src="<%= data.host %>plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="<%= data.host %>plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- SlimScroll 1.3.0 -->
+    <script src="<%= data.host %>plugins/slimScroll/jquery.slimscroll.min.js"></script>
+
+    <script src="<%= data.host %>socket.io-client/dist/socket.io.js"></script>
+    <script src="<%= data.host %>javascripts/socket_service.js"></script>
+    <script src="<%= data.host %>libs/bkrtc.js"></script>
+    <script src="<%= data.host %>javascripts/bootstrap-notify.min.js"></script>
+    <script src="<%= data.host %>/libs/dist/js/rtcApp.js"></script>
+
+    <script>
+      var body = $(window);
+      var box = $("#box");
+      var local_stream = $("#local_stream");
+      var remote_video = $("#remote-video");
+      var chat_text_header = $("#chat_text_header");
+      var chat_text_body = $("#chat_text_body");
+      var chat_text_input = $("#chat_text_input");
+      var stopChat = $("#stopChat");
+      var startChat = $("#startChat");
+      var list_stream = {};
+      var list_remote_id = [];
+      var config_stream = $("#config_stream");
+      var list_participant = $("#list_participant");
+      var video_input_selector  = document.getElementById('camera-option');
+      var audio_input_selector  = document.getElementById('microphone-option');
+      var audio_output_selector = document.getElementById('sound-option');
+      box[0].style.height = body.height()*3/4 + "px";
+      box[0].style.width = "300px";
+      console.log(box.height()+ " " + chat_text_header.height() + " "+chat_text_input.height() );
+      chat_text_body.height(box.height()-chat_text_header.height()-140);
+    </script>
+  </body>
+</html>
+
+<script type="text/javascript">
+  var user_name = "<%- data.user.user_name %>";
+  var image     = "<%- data.user.image %>";
+  var room_name = "<%- data.room_name %>";
+  var canvas = document.getElementById('canvas');
+  var context = canvas.getContext('2d');
+  var mainvideo;
+  var EE = new EventEmitter2();
+  canvas.style.height = (body.height() -50) + "px";
+  var setting = {
+    video_constraints: {
+      mandatory: {
+        minWidth: 320,
+        maxWidth: 1280,
+        minHeight: 180,
+        maxHeight: 720,
+        minFrameRate: 10,
+        maxFrameRate: 30
+      },
+      optional:[]
+    },
+    media: {
+      video: true,
+      audio: true
+    }
+  };
+
+  var service = init_room();
+
+  if(service === null) {
+    console.log("can't init_room");
+  }
+  join();
+
+
+  function join() {
+    var init_storage = get_init_storage();
+    init(user_name);
+    join_room({user_name: user_name, room_name: room_name}, socket);
+
+    on("join_room", function(message) {
+
+      var data_res = JSON.parse(message);
+      if(data_res.status) {
+        _init();
+      }
+      else {
+        // console.log("can't join room");
+        window.location.replace("<%- data.host %>room_unavailable");
+      }
+    });
+
+    function _init() {
+      connect_server(user_name, service);
+      service.event.on("ACCEPT", function(accept) {
+        if(accept) {
+          service.get_user_media(setting.media, function(stream) {
+            list_stream["local_stream"] = {
+              video_track : null,
+              audio_track : null,
+              stream      : stream
+            };
+            // var local_stream = $("#local_stream");
+            local_stream.attr("src",window.URL.createObjectURL(stream));
+            local_stream.autoplay = true;
+            local_stream.className = "col-md-12";
+            SoundMeter("local_stream", stream);
+            service.call_room(room_name, function(error) {
+              if(error) {
+                console.log(error);
+                return;
+              }
+            });
+          },
+          function(error) {
+            console.log(error);
+          });
+
+          emit('get_messages');
+          emit('get_participants');
+          emit('get_user_invite', JSON.stringify({"data": room_name}));
+        }
+      });
+
+      service.event.on("LOGGING", function(data) {
+        console.log(data);
+      });
+
+      service.event.on("remote_stream", function(stream, peer) {
+        // var participant = ' <li class="list-group-item" id="li'+peer.id+'" style="height: 40px"><p class="col-md-8">'+peer.name+'</p><a class="invite"><i class="fa fa-user-plus col-md-2" aria-hidden="true" ></i></a><a class="chat_direct"><i class="col-md-2 fa fa-comment-o" aria-hidden="true"></i></a></li>';
+        // list_participant.append(participant);
+        add_video(peer);
+        add_stream_video(stream, peer.id);
+        list_remote_id.push(peer.id);
+        list_stream[peer.id] = {
+          video_track: null,
+          audio_track: null,
+          stream     : stream
+        };
+
+        SoundMeter(peer.id, stream);
+
+      });
+
+      service.event.on("end_remote_stream", function(peer_id) {
+        var div = "#div"+peer_id;
+        $(div).remove();
+        delete list_stream[peer_id];
+      });
+
+      service.get_device_media({
+        video_input_selector: video_input_selector,
+        audio_input_selector: audio_input_selector,
+        audio_output_selector: audio_output_selector
+      });
+
+
+      // // event choose remote video
+      videoListener();
+
+      on('chat_room_broadcast', function(message) {
+        var data_res = JSON.parse(message).data;
+        add_message(data_res)
+        // show_status_chat();
+      });
+
+      on("chat_room_p2p", function(message) {
+        var data_res = JSON.parse(message).data;
+        console.log(data_res)
+        $("#direct_name").text(data_res.from.user_name);
+        $("#chat-box-bottom").show();
+        $("#box").hide();
+        var message_receive = '<div class="direct-chat-msg"><div class="direct-chat-info clearfix"><span class="direct-chat-name pull-left">'+data_res.from.user_name+'</span><span class="direct-chat-timestamp pull-right">'+data_res.time+'</span></div><img class="direct-chat-img" src="'+data_res.from.image+'" alt="Message User Image"><div class="direct-chat-text">'+data_res.message+'</div></div>';
+        $("#direct-chat-messages").append(message_receive); 
+        set_bottom_scroll();
+
+      });
+
+      on("get_participants", function(message) {
+        var data_res = JSON.parse(message).data;
+        console.log(data_res);
+      });
+
+      on("get_user_invite", function(message) {
+        var data_res = JSON.parse(message).data;
+        for(var i = 0; i < data_res.length; i++) {
+          var participant = ' <li class="list-group-item" id="" style="height: 40px"><p class="col-md-8">'+data_res[i].user_name+'</p><a class="invite"><i class="fa fa-user-plus col-md-2" aria-hidden="true" ></i></a><a class="chat_direct"><i class="col-md-2 fa fa-comment-o" aria-hidden="true"></i></a></li>';
+          list_participant.append(participant);
+        };
+        $(".invite").on("click", function() {
+          var to = $(this).siblings('p').text();
+          var data = {
+            from: user_name,
+            to: to,
+            room_name: room_name
+          }
+          $('#participant_modal').modal('hide');
+          emit("invite_to_room", JSON.stringify({"data": data}) );
+        });
+
+        $(".chat_direct").on("click", function() {
+          var name = $(this).siblings('p').text();
+          $("#direct_name").text(name);
+          $("#direct-chat-messages").empty();
+          $("#chat-box-bottom").show();
+          $('#participant_modal').modal('hide');
+          box.hide();
+        });
+      });
+
+      function add_video(peer) {
+        var remote_video = document.getElementById("remote-video");
+        var div = document.createElement("div");
+        var video = document.createElement("video");
+        var muted = document.createElement("i");
+        var unmuted = document.createElement("i");
+        var pause   = document.createElement("i");
+        var resume  = document.createElement("img");
+
+        div.className = "col-md-2";
+        div.id = "div"+peer.id;
+        div.style.width = "180px";
+        div.style.textAlign = "center";
+        div.style.top = "3%";
+        video.id = peer.id;
+        video.className = "remote-video";
+        muted.className = "fa fa-microphone muted icon-buttons-1";
+        unmuted.className = "fa fa-microphone-slash unmuted icon-buttons-1";
+        pause.className = "fa fa-video-camera pause icon-buttons-2";
+        resume.src = "<%- data.host %>/images/camera-off.png";
+        resume.className = "icon-buttons-2 resume";
+        resume.style.display="none";
+        resume.style.width="20px";
+        resume.style.height="20px";
+        unmuted.style.display = "none";
+        div.appendChild(video);
+        div.appendChild(muted);
+        div.appendChild(unmuted);
+        div.appendChild(pause);
+        div.appendChild(resume);
+        remote_video.appendChild(div);
+      }
+
+      function add_stream_video(stream, peer_id) {
+        var video = document.getElementById(peer_id);
+        var video_id = "#"+peer_id;
+        video.src = URL.createObjectURL(stream);
+        // video.style.width = (local_stream.height() - 20) + "px";
+        video.style.width = "180px";
+        video.style.marginLeft = "-20px";
+        video.autoplay = true;
+        $(".muted").on("click", function() {
+          $(this).siblings(".unmuted").show();
+          $(this).hide();
+          // $(video_id).prop('muted', true);
+          mute(peer_id);
+        });
+        $(".unmuted").on("click", function() {
+          $(this).siblings(".muted").show();
+          $(this).hide();
+          // $(video_id).prop('muted', false);
+          unmute(peer_id);
+        });
+
+        $(".pause").on("click", function() {
+          $(this).siblings(".resume").show();
+          $(this).hide();
+          pause_video(peer_id);
+        });
+
+        $(".resume").on("click", function() {
+          $(this).siblings(".pause").show();
+          $(this).hide();
+          resume_video(peer_id);
+        });
+
+      }
+      //socket event listner
+      on("user_join_room", function(message) {
+        var data_res = JSON.parse(message).data;
+        if(data_res === undefined || data_res === null) {
+          return;
+        }
+        else {
+          var user_name = data_res.user.user_name.toUpperCase();
+          var image = "https://bkmedia.ga:8210/"+data_res.user.image;
+
+            $.notify({
+            // options
+            icon: 'fa fa-sign-in',
+            title: " ",
+            message:" "+ user_name +" join room",
+            target: '_blank'
+            },{
+            // settings
+            element: 'body',
+            position: null,
+            type: "info",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: false,
+            placement: {
+              from: "top",
+              align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            timer: 1000,
+            url_target: '_blank',
+            mouse_over: null,
+            animate: {
+              enter: 'animated fadeInDown',
+              exit: 'animated fadeOutUp'
+            },
+            onShow: null,
+            onShown: null,
+            onClose: null,
+            onClosed: null,
+            icon_type: 'class',
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<image src="'+image+'" style="height:30px"> ' +
+              '<span data-notify="title">{1}</span> ' +
+              '<span data-notify="icon"></span> ' +
+              '<span data-notify="message">{2}</span>' +
+              '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+              '</div>' +
+              '<a href="{3}" target="{4}" data-notify="url"></a>' +
+            '</div>'
+            });
+        }
+      });
+
+      on("user_leave_room", function(message) {
+        var data_res = JSON.parse(message).data;
+        var user_name = data_res.user.user_name.toUpperCase();
+        // var _user_name = "#"+data_res.user.user_name;
+        var image = "https://bkmedia.ga:8210/"+data_res.user.image;
+        if(data_res === undefined || data_res === null) {
+          return;
+        }
+        else {
+          $.notify({
+            // options
+            icon: 'fa fa-sign-in',
+            title: " ",
+            message:" "+ user_name +" left room",
+            target: '_blank'
+            },{
+            // settings
+            element: 'body',
+            position: null,
+            type: "danger",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: false,
+            placement: {
+              from: "top",
+              align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            timer: 1000,
+            url_target: '_blank',
+            mouse_over: null,
+            animate: {
+              enter: 'animated fadeInDown',
+              exit: 'animated fadeOutUp'
+            },
+            onShow: null,
+            onShown: null,
+            onClose: null,
+            onClosed: null,
+            icon_type: 'class',
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<image src="'+image+'" style="height:30px"> ' +
+              '<span data-notify="title">{1}</span> ' +
+              '<span data-notify="icon"></span> ' +
+              '<span data-notify="message">{2}</span>' +
+              '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+              '</div>' +
+              '<a href="{3}" target="{4}" data-notify="url"></a>' +
+            '</div>'
+            });
+        }
+      });
+
+      on('get_messages', function(message) {
+        var data_res = JSON.parse(message).data;
+        for(var i = 0; i < data_res.length; i++) {
+          data_res[i].from.image = "https://bkmedia.ga:8210/"+data_res[i].from.image;
+          add_message(data_res[i]);
+        }
+      });
+
+      function draw(video, context) {
+        var canvas = document.getElementById('canvas');
+        var width  = canvas.offsetWidth;
+        var height = canvas.offsetHeight;
+        canvas.width  = width;
+        canvas.height = height;
+        context.drawImage(video, 0, 0, width, height);
+        mainvideo = setTimeout(draw, 10, video, context, width, height);
+      };
+
+      function videoListener() {
+        document.getElementById('remote-video').addEventListener('click', function(e) {
+          // e.target is the clicked element!
+          // If it was a list item
+          if(e.target && e.target.nodeName == 'VIDEO') {
+            // List item found!  Output the ID!
+            console.log('List item ', e.target.id.replace('post-', ''), ' was clicked!');
+            clearTimeout(mainvideo);
+            draw(document.getElementById(e.target.id), context);
+          }
+        });
+      };
+    };
+  };
+
+  function send_message() {
+    var text_message = $("#text_message");
+    if( text_message.val() === "") {
+      return;
+    }
+    else {
+      var data = {
+        "from": { "user_name": user_name, "image": image },
+        "message": text_message.val(),
+        "time": formatDate(new Date())
+      };
+      add_message(data);
+      set_bottom_scroll();
+
+      emit('chat_room_broadcast', JSON.stringify({"data": data}));
+
+      // remove_status_chat();
+      text_message.val("");
+    }
+  };
+
+   $('#text_message').keypress(function(event){
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if (keycode == '13') {
+        var text_message = $("#text_message");
+        if( text_message.val() === "") {
+          return;
+        }
+        else {
+          var data = {
+            "from": { "user_name": user_name, "image": image },
+            "message": text_message.val(),
+            "time": formatDate(new Date())
+          };
+          add_message(data);
+          set_bottom_scroll();
+
+          emit('chat_room_broadcast', JSON.stringify({"data": data}));
+
+          // remove_status_chat();
+          text_message.val("");
+        }
+      }
+    });
+
+  function send() {
+    var data = {
+      from: {
+        user_name:user_name,
+        image: image
+      },
+      to: $("#direct_name").text(),
+      time: formatDate(new Date()),
+      message: $("#text-message").val(),
+    };
+    var message_send = '<div class="direct-chat-msg right"><div class="direct-chat-info clearfix"><span class="direct-chat-name pull-right">'+user_name+'</span><span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span></div><img class="direct-chat-img" src="'+image+'" alt="Message User Image"><div class="direct-chat-text">'+$("#text-message").val()+'</div></div>';
+    $("#direct-chat-messages").append(message_send); 
+    set_bottom_scroll();
+    emit("chat_room_p2p", JSON.stringify({"data": data}));
+    $("#text-message").val("");
+  };
+
+  $('#text-message').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == '13') {
+    var text_message = $("#text-message");
+      if( text_message.val() === "") {
+          return;
+      }
+      else {
+          send();
+      }
+    }
+  });
+
+  function remove_main() {
+    var main_stream = document.getElementById('main-stream');
+    var canvas = document.getElementById('canvas');
+    main_stream.removeChild(canvas);
+    var canvas_stream = document.createElement('canvas');
+    canvas_stream.id = "canvas";
+    canvas_stream.style.width = "90%";
+    canvas_stream.style.background = "#ddd";
+    canvas_stream.style.height = (body.height() -50) + "px";
+    canvas_stream.style.borderRadius = "2%"
+    main_stream.insertBefore(canvas_stream, document.getElementById('remove_icon'));
+    context = canvas_stream.getContext('2d');
+
+  };
+
+  function add_message(data) {
+    if(data.from.user_name == user_name) {
+      var message_send = '<div class="direct-chat-msg right"><div class="direct-chat-info clearfix"><span class="direct-chat-name pull-right">'+data.from.user_name+'</span><span class="direct-chat-timestamp pull-left">'+data.time+'</span></div><img class="direct-chat-img" src="'+data.from.image+'" alt="Message User Image"><div class="direct-chat-text alert alert-info">'+data.message+'</div></div>';
+      $("#chat_text_body").append(message_send);
+      set_bottom_scroll();
+    }
+    else {
+      var message_receive = '<div class="direct-chat-msg"><div class="direct-chat-info clearfix"><span class="direct-chat-name pull-left">'+data.from.user_name+'</span><span class="direct-chat-timestamp pull-right">'+data.time+'</span></div><img class="direct-chat-img" src="'+data.from.image+'" alt="Message User Image"><div class="direct-chat-text">'+data.message+'</div></div>';
+      $("#chat_text_body").append(message_receive);
+      set_bottom_scroll();
+    }
+
+  }
+
+  function set_bottom_scroll() {
+    var scroll_room = document.getElementById("chat_text_body");
+    var scroll_p2p = document.getElementById("direct-chat-messages")
+    scroll_room.scrollTop = scroll.scrollHeight;
+    scroll_p2p.scrollTop = scroll.scrollHeight;
+  };
+
+  function formatDate(date) {
+    var time = "";
+    var day = date.getDate();
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+
+    time = day + "/" + month + "/" + year + " | " + hour + ":" + minute + ":" + second;
+    return time;
+  };
+
+  function out_room() {
+    window.location.replace("<%- data.host %>");
+  };
+
+  function mute(peer_id) {
+    var media_stream = list_stream[peer_id];
+    if(media_stream !== undefined) {
+      var audio_track = media_stream.stream.getAudioTracks();
+      if(audio_track.length > 0) {
+        media_stream.audio_track = audio_track;
+        media_stream.stream.removeTrack(audio_track[0]);
+        $("#"+peer_id).attr("src",window.URL.createObjectURL(media_stream.stream));
+      }
+      else {
+        console.log("Not turn off audio");
+      }
+    }
+    else {
+      console.log("Change permission for brower to using the media");
+    }
+  };
+
+function unmute(peer_id) {
+  var media_stream = list_stream[peer_id];
+  if(media_stream !== undefined) {
+    if(media_stream.audio_track !== null) {
+        media_stream.stream.addTrack(media_stream.audio_track[0]);
+        $("#"+peer_id).attr("src",window.URL.createObjectURL(media_stream.stream));
+    }
+  }
+  else {
+    console.log("LOGGING", "Change permission for brower to using the media");
+  }
+};
+
+function pause_video(peer_id) {
+  var media_stream = list_stream[peer_id];
+
+  if(media_stream !== undefined) {
+    var video_track = media_stream.stream.getVideoTracks();
+    if(video_track.length > 0) {
+      media_stream.video_track = video_track;
+      media_stream.stream.removeTrack(video_track[0]);
+      $("#"+peer_id).attr("src",window.URL.createObjectURL(media_stream.stream));
+    }
+    else {
+      console.log("LOGGING", "Not turn off video");
+    }
+  }
+  else {
+    console.log("LOGGING", "Change permission for brower to using the media");
+  }
+};
+
+function resume_video(peer_id) {
+  var media_stream = list_stream[peer_id];
+  if(media_stream !== undefined) {
+    if(media_stream.video_track !== null) {
+        media_stream.stream.addTrack(media_stream.video_track[0]);
+        $("#"+peer_id).attr("src",window.URL.createObjectURL(media_stream.stream));
+    }
+  }
+  else {
+    console.log("Change permission for brower to using the media");
+  }
+};
+
+startChat.on("click", function() {
+  box.show();
+  $("#chat-box-bottom").hide();
+  startChat.hide();
+  stopChat.show();
+
+});
+stopChat.on("click", function() {
+  box.hide();
+  startChat.show();
+  stopChat.hide();
+});
+
+function toggleNav() {
+  var dock = $("#dock");
+  var showFeedback = $("#showFeedback");
+  if(dock.width() > 100) {
+    dock.width(20);
+    showFeedback.hide();
+  }
+  else {
+    dock.width(300);
+    showFeedback.show();
+  } 
+};
+
+$("#local_muted").on("click", function() {
+  $(this).siblings("#local_unmuted").show();
+  $(this).hide();
+  mute("local_stream");
+});
+$("#local_unmuted").on("click", function() {
+  $(this).siblings("#local_muted").show();
+  $(this).hide();
+  unmute("local_stream");
+});
+
+$("#local_pause").on("click", function() {
+  $(this).siblings("#local_resume").show();
+  $(this).hide();
+  pause_video("local_stream");
+});
+
+$("#local_resume").on("click", function() {
+  $(this).siblings("#local_pause").show();
+  $(this).hide();
+  resume_video("local_stream");
+});
+
+$("#config_icon").on("click", function() {
+  $('#config_modal').modal('show');
+   service.setting_user_media(setting.media, function(stream) {
+      config_stream.attr("src",window.URL.createObjectURL(stream));
+      config_stream.autoplay = true;
+    }, function(error) {
+        console.log(error);
+    });
+});
+
+$("#participants").on("click", function() {
+  $('#participant_modal').modal('show');
+});
+
+$("#close").on("click", function() {
+  $("#chat-box-bottom").hide();
+});
+
+function save_setting() {
+  if(document.getElementById('opt_low').checked) {
+
+  }
+  else if(document.getElementById('opt_medium').checked) {
+    setting.video_constraints.mandatory.minFrameRate = 20;
+    setting.video_constraints.mandatory.maxFrameRate = 30;
+  }
+  else if(document.getElementById('opt_good').checked) {
+    setting.video_constraints.mandatory.minFrameRate = 50;
+    setting.video_constraints.mandatory.maxFrameRate = 60;
+  }
+
+  if(setting.video_constraints.optional.length > 0) {
+    setting.video_constraints.optional.splice(0, 1);
+  }
+  setting.video_constraints.optional.push({sourceId: video_input_selector.value});
+
+  setting.media.video = setting.video_constraints;
+    service.setting_user_media(setting.media, function(stream) {
+      config_stream.attr("src",window.URL.createObjectURL(stream));
+      config_stream.autoplay = true;
+      for(var i = 0; i < list_remote_id.length; i++) {
+        var remote_id =list_remote_id[i];
+        var peer = service.list_peer[remote_id];
+        var media_connection = peer.connection.negotiator.peer_connections.media[remote_id];
+        media_connection.removeStream(list_stream["local_stream"].stream);
+        media_connection.addStream(stream);
+      }
+    }, function(error) {
+        console.log(error);
+    });
+    var config_src = config_stream.attr('src');
+    local_stream.attr('src', config_src);
+    config_stream.attr('src','');
+};
+
+
+// hightlight
+
+
+// setInterval(function() {
+//   for(var id in list_stream) {
+//     console.log(Object.keys(list_stream[id]));
+//   }
+// },500);
+
+function SoundMeter(id, mediaStrem) { 
+  try {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    window.audioContext = new AudioContext();
+    var context_hightlight = window.audioContext;
+  } catch (e) {
+    alert('Web Audio API not supported.');
+  };
+  var mediaStrem = mediaStrem;
+  var instant = 0.0;
+  var script = context_hightlight.createScriptProcessor(2048, 1, 1);
+  script.onaudioprocess = function(event) {
+    var input = event.inputBuffer.getChannelData(0);
+    var i;
+    var sum = 0.0;
+    var clipcount = 0;
+    for (i = 0; i < input.length; ++i) {
+      sum += input[i] * input[i];
+      if (Math.abs(input[i]) > 0.99) {
+        clipcount += 1;
+
+      }
+    }
+    instant = Math.sqrt(sum / input.length);
+  }
+  connectToSource(mediaStrem, context_hightlight, script, function(e) {
+    if(e) {
+      console.log(e); 
+      return;
+    }
+    setInterval(function() {  
+      // console.log(self.instant);
+      if(instant > 0.03) {
+        // EE.emit("heightlight",id, self.instant);
+        console.log("heightlight " + id);
+        $("#"+id).css("border-color","#0fce1b");
+      }
+      else {
+        $("#"+id).css("border-color","#3b373c");
+      }
+    }, 200);
+  });
+};
+
+function connectToSource (stream, context_hightlight, script, callback) {
+  console.log('SoundMeter connecting');
+  try {
+    var mic = context_hightlight.createMediaStreamSource(stream);
+    mic.connect(script);
+    // necessary to make sample run, but should not be.
+    script.connect(context_hightlight.destination);
+    if (typeof callback !== 'undefined') {
+
+      callback(null);
+    }
+  } catch (e) {
+    console.error(e);
+    if (typeof callback !== 'undefined') {
+      callback(e);
+    }
+  }
+};
+// EE.on("heightlight", function(id, instant) {
+//   // if(instant > 0) {
+//     var id = "#" + id;
+//     console.log("heightlight " + id);
+//     $(id).css("border-color","#0fce1b");
+//     setTimeout(function() {
+//       $(id).css("border-color","#3b373c");
+//     },1000);
+  // }
+  // else {
+  //   $(id).css("border-color","#3b373c");
+  // }
+// })
+$("#upload").on("click", function() {
+    $("#upload_modal").modal('show');
+});
+</script>
+<script src="<%= data.host %>javascripts/record.js"></script>

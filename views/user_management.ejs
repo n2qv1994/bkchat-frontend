@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ./partials/head %>
+    <link rel="stylesheet" href="<%= data.host %>/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="<%= data.host %>/libs/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- custom -->
+    <link rel="stylesheet" href="<%= data.host %>stylesheets/direct_chat.css">
+  </head>
+
+  <body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+      <header class="main-header">
+        <% include ./partials/header %>
+      </header>
+      <aside class="main-sidebar">
+        <% include ./partials/side_menu_management %>
+      </aside>
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            User Management
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/user_management">Users</a></li>
+          </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">All Users</h3>
+                </div>
+                <div class="schedule-option">
+                    <a href="/management/user_management/create" class="btn btn-block btn-primary" style="width:100px; margin-left: 10px">Create User</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                  <table id="users" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                      <th></th>
+                      <th>User</th>
+                      <th>Created</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <% for(var i = 0; i < data.item.length; i++) { %>
+                        <tr>
+                          <td>
+                            <div class="user-panel">
+                              <div class="image">
+                                <img src="<%= data.item[i].image %>" class="img-circle" alt="User Image">
+                              </div>
+                            </div>
+                          </td>
+                          <td><%= data.item[i].user_name %></td>
+                          <td><%= data.item[i].created_at %></td>
+                          <td><%= data.item[i].email %></td>
+                          <td><%= data.item[i].address %></td>
+                          <th>
+                            <button type="button" class="btn btn-block btn-danger" onclick="chat('<%= data.item[i].user_name %>')"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+                          </th>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                      <th></th>
+                      <th>User</th>
+                      <th>Created</th>
+                      <th>Status</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th></th>
+                    </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+              </div>
+              <!-- /.box -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </section>
+        <!-- /.content -->
+      </div>
+
+      <div class="rows" id="chat-box">
+        <div id="send-message">
+            <a href="#">
+                <i class="fa fa-comments" id="icon-message-bottom" style="margin-left: 10px;font-size:40px; color:white; position:relative; top:15%"></i>
+            </a>
+        </div>
+        <div id="fixed-bottom">
+            <div id='chat-box-bottom' style="display: none">
+              <!-- DIRECT CHAT PRIMARY -->
+              <div class="box box-primary direct-chat direct-chat-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title" id="direct_name"></h3>
+
+                  <div class="box-tools pull-right">
+                    <span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span>
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
+                      <i class="fa fa-comments"></i></button>
+                    <button  id="close" type="button" class="btn btn-box-tool"><i class="fa fa-times"></i></button>
+                  </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                  <!-- Conversations are loaded here -->
+                  <div class="direct-chat-messages" id="direct-chat-messages">
+                  </div>
+                  <!--/.direct-chat-messages-->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="input-group">
+                      <input id ="text-message" type="text" name="message" placeholder="Type Message ..." class="form-control">
+                          <span class="input-group-btn">
+                            <button class="btn btn-primary btn-flat" onclick="send()">Send</button>
+                          </span>
+                    </div>
+                </div>
+                <!-- /.box-footer-->
+              </div>
+              <!--/.direct-chat -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content" style="border-radius: 2%;background-color: #000000;">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Direct Call</h4>
+            </div>
+            <div class="modal-body">
+              <img id="notify_img" class="col-md-8 col-md-offset-2" src="" style="border-radius: 50%">
+              <p id="notify_call" class="col-md-10 col-md-offset-1" style="font-size: 18px;font-style: oblique;"></p>
+              <p id="user_name_call" style="display: none;"></p>
+            </div>
+            <div class="modal-footer col-md-offset-2" style="display: inline-block;">
+              <button id="accept" type="button" class="btn btn-success" data-dismiss="modal" style="display: none; width: 80px" onclick="accept_call()"><i class="fa fa-phone" aria-hidden="true"></i></button>
+              <button id="refuse" type="button" class="btn btn-danger" data-dismiss="modal" style="display: none; width: 80px" onclick="refuse_call()"><i class="fa fa-phone" aria-hidden="true"></i></button>
+              <button id="cancel" type="button" class="btn btn-danger" data-dismiss="modal" style="display: none; width: 80px; margin-left: 45px" onclick="cancel_call()"><i class="fa fa-phone" aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <footer class="main-footer">
+      </footer>
+    </div>
+    <script src="<%= data.host %>/javascripts/config.js"></script>
+    <!-- jQuery 2.2.3 -->
+    <script src="<%= data.host %>/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="<%= data.host %>/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <script src="<%= data.host %>/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="<%= data.host %>/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="<%= data.host %>/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="<%= data.host %>/plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="<%= data.host %>/libs/dist/js/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="<%= data.host %>/libs/dist/js/demo.js"></script>
+    <!-- page script -->
+    <script src="<%= data.host %>/socket.io-client/dist/socket.io.js"></script>
+    <script type="text/javascript" src="<%= data.host %>/javascripts/socket_service.js"></script>
+
+    <!-- custom -->
+    <script type="text/javascript" src="<%= data.host %>/javascripts/direct_chat.js"></script>
+    <script>
+      $(function () {
+        $('#users').DataTable({
+          "paging": true,
+          "lengthChange": false,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "autoWidth": false
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<script type="text/javascript">
+
+  var user_name = "<%- data.user.user_name %>";
+  var image     = "<%- data.user.image %>";
+  init(user_name);
+
+  function accept_call() {
+    $("#accept").hide();
+    $("#refuse").hide();
+    $("#cancel").hide();
+    var data = {
+      from: {
+        user_name:user_name,
+        image: image
+      },
+      to: $("#user_name_call").text(),
+      status: "accept",
+    };
+    sound_ringing.pause();
+    sound_ringing.currentTime = 0;
+    // window.location.replace("<%- data.host %>call");
+    emit("call", JSON.stringify({ "data": data }));
+  };
+
+  function refuse_call() {
+    $("#accept").hide();
+    $("#refuse").hide();
+    $("#cancel").show();
+    sound_ringing.pause();
+    sound_ringing.currentTime = 0;
+    var data = {
+      from: {
+        user_name:user_name,
+        image: image
+      },
+      to: $("#user_name_call").text(),
+      status: "refuse",
+    };
+    emit("call", JSON.stringify({ "data": data }));
+  };
+
+  function cancel_call() {
+    $("#accept").hide();
+    $("#refuse").hide();
+    $("#cancel").hide();
+    var data = {
+      from: {
+        user_name:user_name,
+        image: image
+      },
+      to: $("#user_name_call").text(),
+      status:"cancel"
+    };
+    emit("call", JSON.stringify({ "data": data })); 
+  };  
+  on("call", function(message) {
+    $("#accept").hide();
+    $("#refuse").hide();
+    $("#cancel").hide();
+    var data_res = JSON.parse(message).data;
+    if(data_res.status === "accept") {
+      window.location.replace("<%- data.host %>call");
+    }
+    else if ((data_res.status === "refuse") && (data_res.from != user_name)) {
+      $("#myModal").modal('show');
+      $("#notify_call").text("refuse your call");
+    }
+    else {
+      sound_ringing.pause();
+      sound_ringing.currentTime = 0;
+      $("#accept").hide();
+      $("#refuse").hide();
+      $("#cancel").hide();
+      $("#myModal").modal("hide");
+    }
+  });
+
+</script>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="<%= data.host %>plugins/select2/select2.min.css">
+    <% include ../partials/head %>
+    <link rel="stylesheet" href="<%= data.host %>plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="<%= data.host %>stylesheets/bootstrap-datetimepicker.min.css"/>
+  </head>
+  <body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+      <header class="main-header">
+        <% include ../partials/header %>
+      </header>
+      <aside class="main-sidebar">
+        <% include ../partials/side_menu %>
+      </aside>
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            My meetings
+            <small><%= data.item.room_code %></small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="/meetings">My meetings</a></li>
+            <li><a href="/meetings/<%= data.item.room_code %>"></a><%= data.item.room_code %></li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-md-12">
+              <!-- Horizontal Form -->
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Meeting Setting</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal">
+                  <div class="box-body">
+                    <div class="form-group" style="border-bottom:1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="topic" class="col-sm-2 control-label">Topic</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <input type="text" class="form-control" id="topic" value="<%= data.item.room_name %>" placeholder="Topic">
+                        </div>
+                    </div>
+                    <div class="form-group" style="border-bottom:1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="description" class="col-sm-2 control-label">Description</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <textarea type="text" class="form-control" id="description" placeholder="Description"><%= data.item.description %></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="start_time" class="col-sm-2 control-label">Start Time</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div>
+                          <div class='input-group date' id='start_time'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                              <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="meeting_id" class="col-sm-2 control-label">Meeting ID</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <div><%= data.item.room_code %></div>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="meeting_id" class="col-sm-2 control-label">Limited</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <select class="form-control">
+                          <option <% if (data.item.limited == 2) { %>selected<% } %>>2</option>
+                          <option <% if (data.item.limited == 3) { %>selected<% } %>>3</option>
+                          <option <% if (data.item.limited == 4) { %>selected<% } %>>4</option>
+                          <option <% if (data.item.limited == 5) { %>selected<% } %>>5</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group" style="border-bottom: 1px solid #f4f4f4; padding-bottom:15px">
+                      <label for="member" class="col-sm-2 control-label">Members</label>
+
+                      <div class="col-sm-10" style="padding-top:7px">
+                        <select class="form-control member" multiple="multiple" data-placeholder="Select a State" style="width:100%">
+                          <% for(var i = 0; i < data.users.length; i++) { %>
+                            <option><%= data.users[i].user_name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.box-body -->
+                  <div class="box-footer">
+                    <a href="" class="btn btn-default pull-right">Cancel</a>
+                    <button type="submit" class="btn btn-info pull-right" style="margin-right:5px">Save</button>
+                  </div>
+                  <!-- /.box-footer -->
+                </form>
+              </div>
+              <!-- /.box -->
+            </div>
+          <!-- /.col -->
+          </>
+        </section>
+      </div>
+      <footer class="main-footer">
+      </footer>
+    </div>
+    <!-- jQuery 2.2.3 -->
+    <script src="<%= data.host %>plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="<%= data.host %>bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <script src="<%= data.host %>plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="<%= data.host %>plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="<%= data.host %>plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="<%= data.host %>plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="<%= data.host %>libs/dist/js/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="<%= data.host %>libs/dist/js/demo.js"></script>
+    <script src="<%= data.host %>moment/min/moment.min.js"></script>
+    <script src="<%= data.host %>javascripts/bootstrap-datetimepicker.min.js"></script>
+    <!-- Select2 -->
+    <script src="<%= data.host %>plugins/select2/select2.full.min.js"></script>
+    <!-- page script -->
+    <script>
+    $(function () {
+      //Initialize Select2 Elements
+      var $user = $(".member").select2();
+      var users = <%- JSON.stringify(data.item.users) %>;
+      var names = [];
+      for(var i = 0; i < users.length; i++) {
+        names.push(users[i].user_name);
+      }
+      $user.val(names).trigger("change");
+      $('#start_time').datetimepicker();
+    });
+    </script>
+  </body>
+</html>

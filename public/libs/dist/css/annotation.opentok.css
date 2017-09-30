@@ -1,0 +1,42 @@
+#opentok_canvas {
+  z-index: 1012;
+}
+[data-annotation-visible=true] #screen {
+  padding-right: 55px;
+}
+[data-annotation-visible=true] #screen .streams[data-current-layout-type=float] .tc-list li[data-stream-type=publisher] {
+  right: 65px;
+}
+[data-annotation-visible=true] .ots-annotation-toolbar-container {
+  opacity: 1;
+}
+.ots-annotation-toolbar-container {
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+          transition: opacity 0.3s;
+  z-index: 1001;
+  top: 18px;
+  right: 9.5px;
+}
+.ots-annotation-toolbar-container > div input {
+  margin: 0;
+}
+.ots-annotation-toolbar-container > div input:focus {
+  outline: none;
+}
+.ots-annotation-toolbar-container > div .OT_panel {
+  border-radius: 8px;
+}
+.ots-annotation-toolbar-container > div .OT_subpanel,
+.ots-annotation-toolbar-container > div .color-picker {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  height: auto !important;
+}
+.ots-annotation-toolbar-container > div .OT_subpanel,
+.ots-annotation-toolbar-container > div .color-picker {
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+}

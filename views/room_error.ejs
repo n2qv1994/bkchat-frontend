@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<h1><%= data.message %></h1>
+<a href="#" onclick="back_to_home()"> back to home </a>
+</html>
+<script type="text/javascript">
+	function back_to_home () {
+		window.location.replace("<%- data.host %>");
+	}
+</script>
+

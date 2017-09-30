@@ -1,0 +1,27 @@
+{
+  "name": "bkmedia-dev",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "bootstrap": "^3.3.7",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "~2.4.1",
+    "eventemitter2": "^3.0.2",
+    "express": "~4.13.4",
+    "express-session": "^1.15.1",
+    "iconv-lite": "^0.4.15",
+    "jquery": "^3.1.1",
+    "method-override": "^2.3.7",
+    "moment": "^2.17.1",
+    "moment-timezone": "^0.5.13",
+    "morgan": "~1.7.0",
+    "request": "^2.79.0",
+    "serve-favicon": "~2.3.0",
+    "socket.io": "^1.7.3"
+  }
+}

@@ -1,0 +1,312 @@
+@import url("https://fonts.googleapis.com/css?family=Muli:300,300italic");
+@import url("https://fast.fonts.com/t/1.css?apiType=css&projectid=eab16f51-e7e4-4285-8b2b-3844b7921c78");
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+html {
+  width: 100%;
+  height: 100%;
+  color: #151515;
+  font-family: "Muli", arial;
+  font-weight: 100;
+}
+body.forbidden {
+  display: none !important;
+}
+img {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+label {
+  font-size: 13px;
+  line-height: 28px;
+  font-weight: 700;
+  padding-right: 7px;
+}
+.tc-modal {
+  z-index: -1;
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+          transition: opacity 0.3s;
+}
+.tc-modal.show {
+  display: block;
+  opacity: 1;
+}
+.tc-modal.show .tc-dialog {
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
+}
+.tc-modal .tc-dialog {
+  -webkit-transform: translateY(100%);
+      -ms-transform: translateY(100%);
+          transform: translateY(100%);
+  -webkit-transition: -webkit-transform 0.3s;
+          transition: transform 0.3s;
+  padding: 40px;
+  text-align: center;
+  max-width: 360px;
+}
+.tc-modal .tc-dialog .close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.tc-modal .tc-dialog header {
+  font-size: 16px;
+  color: #4f4f4f;
+}
+.tc-modal .tc-dialog header,
+.tc-modal .tc-dialog p {
+  margin: 0;
+  padding: 0;
+}
+.tc-modal .tc-dialog hr {
+  border: 0;
+  background: #0099cc;
+  height: 1px;
+  width: 60%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.tc-modal .tc-dialog p,
+.tc-modal .tc-dialog .btn {
+  font-size: 12px;
+}
+.tc-modal .tc-dialog p {
+  color: #9b9b9b;
+}
+.tc-modal .tc-dialog .btn {
+  height: 35px;
+  line-height: 35px;
+  margin: 0 10px;
+}
+.visible {
+  visibility: visible;
+  z-index: 1000000;
+}
+.bold {
+  font-weight: 700;
+}
+input,
+textarea {
+  font-family: "AvantGardeGothicITCW01B 731069", arial;
+  display: inline-block;
+  border: 1px solid #c5bbb4;
+  resize: none;
+  margin: 5px;
+  padding: 12px 10px;
+  width: 270px;
+  font-size: 16px;
+}
+.endMeeting {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-direction: column;
+  -webkit-flex: 1;
+  -moz-flex: 1;
+  -ms-flex: 1;
+  -webkit-box-flex: 1;
+          flex: 1;
+  background-color: #fff;
+}
+.endMeeting header {
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.endMeeting header img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 60px;
+  padding-top: 60px;
+}
+.endMeeting header p {
+  font-family: "AvantGardeGothicITCW01X", arial;
+  font-size: 30px;
+  color: #5f6062;
+}
+.endMeeting header p.bold {
+  font-weight: 600;
+}
+.endMeeting p {
+  font-family: "Muli", regular;
+  font-size: 16px;
+  color: #5f6062;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.endMeeting .btn {
+  margin-bottom: 35px;
+  margin-top: 35px;
+  height: 50px;
+  min-height: 50px;
+}
+.endMeeting footer p,
+.endMeeting footer a {
+  font-family: "Muli", regular;
+  font-size: 16px;
+  color: #5f6062;
+}
+.endMeeting footer a {
+  color: #1a99ce;
+}
+.endMeeting footer a:link {
+  text-decoration: none;
+}
+.endMeeting footer[data-recordings="0"] {
+  margin-top: 35px;
+}
+.endMeeting .archives {
+  border: 1px solid #c5bbb4;
+  margin-bottom: 35px;
+  background-color: #fff;
+  padding: 35px;
+  text-align: center;
+  max-height: 240px;
+}
+.endMeeting .archives .title {
+  font-family: "AvantGardeGothicITCW01X", arial;
+  font-size: 16px;
+}
+.endMeeting .archives hr {
+  border: 0;
+  background: #0099cc;
+  height: 1px;
+  max-width: 180px;
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+.endMeeting .archives .content {
+  max-width: none;
+  width: 370px;
+}
+.endMeeting .archives[data-recordings] .recordings {
+  display: block;
+}
+.endMeeting .archives[data-recordings] .no-recordings {
+  display: none;
+}
+.endMeeting .archives[data-recordings="0"] {
+  display: none;
+}
+.endMeeting .tc-list {
+  background-color: transparent;
+  max-height: 200px;
+  overflow-x: hidden;
+  padding: 10px 0;
+}
+.endMeeting .tc-list ul {
+  height: 100%;
+  min-width: 320px;
+  text-align: left;
+}
+.endMeeting .tc-list li {
+  background-color: transparent;
+  border-bottom: 0;
+  padding: 5px 0;
+}
+.endMeeting .tc-list li:first-child {
+  padding-top: 0;
+}
+.endMeeting .tc-list li:last-child {
+  padding-bottom: 0;
+}
+.endMeeting .tc-list li[data-status="deleting"] {
+  opacity: .4;
+  pointer-events: none;
+}
+.endMeeting .tc-list li[data-status="available"] a,
+.endMeeting .tc-list li[data-status="stopped"] a {
+  color: #9b9b9b;
+  pointer-events: all;
+}
+.endMeeting .tc-list li[data-status="available"] [data-icon],
+.endMeeting .tc-list li[data-status="stopped"] [data-icon] {
+  display: inline;
+}
+.endMeeting .tc-list a.file {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: -webkit-calc(100% - 60px);
+  width: calc(100% - 60px);
+  display: inline-block;
+  pointer-events: none;
+  padding: 12px 0;
+  margin: -12px 0;
+}
+.endMeeting .tc-list a.download {
+  border-radius: 50%;
+  border: 1px solid #9b9b9b;
+  padding: 8px;
+  margin-right: -15px;
+  visibility: hidden;
+  pointer-events: none;
+}
+.endMeeting .tc-list a:hover,
+.endMeeting .tc-list a:focus,
+.endMeeting .tc-list a:active {
+  background-color: transparent;
+}
+.endMeeting .tc-list [data-icon] {
+  margin-top: -2px;
+  display: inline-block;
+  float: right;
+  display: none;
+}
+.endMeeting .tc-list [data-icon="delete"] {
+  width: 15px;
+  height: 21px;
+  margin-left: 25px;
+  margin-bottom: 5px;
+}
+.endMeeting .toolbar a {
+  text-decoration: none;
+}
+.endMeeting .toolbar a:first-child {
+  margin-right: 30px;
+}
+[data-download-available=true] .archives .tc-list a.download {
+  visibility: visible;
+  pointer-events: auto;
+}
